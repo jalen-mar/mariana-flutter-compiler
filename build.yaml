@@ -1,0 +1,9 @@
+builders:
+  starter:
+    target: ":starter"
+    import: "package:mariana_flutter_compiler/MarianaCompiler.dart"
+    builder_factories: ["starterBuilder"]
+    build_extensions: { ".dart": [".compiler.g.part"] }
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]
