@@ -8,17 +8,14 @@ import 'package:source_gen/source_gen.dart';
 class MarianaCompiler extends GeneratorForAnnotation<MarianaApplication> {
   @override
   generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
-    @override
-    String generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
-      if (element is! ClassElement) {
-        final name = element.displayName;
-        throw InvalidGenerationSourceError(
-          'Generator cannot target `$name`.',
-          todo: 'Remove the [MarianaCompiler] annotation from `$name`.',
-        );
-      }
-      return _implementClass(element, annotation);
+    if (element is! ClassElement) {
+      final name = element.displayName;
+      throw InvalidGenerationSourceError(
+        'Generator cannot target `$name`.',
+        todo: 'Remove the [MarianaCompiler] annotation from `$name`.',
+      );
     }
+    return _implementClass(element, annotation);
   }
 
   String _implementClass(ClassElement element, ConstantReader annotation) {
@@ -52,7 +49,7 @@ class MarianaCompiler extends GeneratorForAnnotation<MarianaApplication> {
     String runApplicationMethod = "void runApplication(application) ${initializeMethod.returnType.isDartAsyncFuture ? "async" : ""} {"
         "WidgetsFlutterBinding.ensureInitialized();"
         "var routes = ${initializeMethod.returnType.isDartAsyncFuture ? "await" : ""} application.${initializeMethod.displayName}();"
-        "FlutterApplication.run(routes, application.getInitializeCallbackList(), ${sessionMethod == null ? null : "application.${sessionMethod.displayName}()"});"
+        "BasicApp.run(routes, application.getInitializeCallbackList(), ${sessionMethod == null ? null : "application.${sessionMethod.displayName}()"});"
         "}";
 
     String mainMethod = "void main() {"

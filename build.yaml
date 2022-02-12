@@ -1,5 +1,5 @@
 builders:
-  starter:
+  mariana:
     target: ":mariana"
     import: "package:mariana_flutter_compiler/MarianaCompilerBuilder.dart"
     builder_factories: ["starterBuilder"]
