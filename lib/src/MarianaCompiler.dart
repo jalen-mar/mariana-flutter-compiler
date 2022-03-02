@@ -52,7 +52,7 @@ class MarianaCompiler extends GeneratorForAnnotation<MarianaApplication> {
         "BasicApp.run(routes, application.getInitializeCallbackList(), ${sessionMethod == null ? null : "application.${sessionMethod.displayName}()"});"
         "}";
 
-    String mainMethod = "void main() {"
+    String mainMethod = "void run() {"
         "var application = ${element.name}Impl();"
         "runApplication(application);"
         "if (Platform.isAndroid) {"
@@ -114,20 +114,20 @@ class MarianaCompiler extends GeneratorForAnnotation<MarianaApplication> {
         if (methods[feignErrorType]!.isAbstract) {
           result.write(
               "void ${methods[feignCallType]!.displayName}(handler, value) {"
-                  "if(value.success) {"
+                  "if(value.status) {"
                   "try {"
                   "handler.call(value.data);"
                   "} catch (e) {"
                   "handler.call();"
                   "}"
                   "} else {"
-                  "switch (value.status) {"
-                  "case 20001:"
-                  "case 401: {"
+                  "switch (value.code) {"
+                  "case \"20001\":"
+                  "case \"401\": {"
                   "${methods[feignLogoutType]!.displayName}();"
                   "}"
                   "}"
-                  "TipUtil.showToast(value.message);"
+                  "TipUtil.showToast(value.msg);"
                   "}"
                   "}");
         }
