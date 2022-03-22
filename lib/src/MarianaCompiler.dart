@@ -82,6 +82,18 @@ class MarianaCompiler extends GeneratorForAnnotation<MarianaApplication> {
         "}";
   }
 
+  ConstantReader? _getAnnotation(MethodElement method, Type type) {
+    final annot = TypeChecker.fromRuntime(type).firstAnnotationOf(method, throwOnUnresolved: false);
+    if (annot != null) return ConstantReader(annot);
+    return null;
+  }
+
+  Map<String, String> _generateFeignCallValue(MethodElement m) {
+    Map<String, String> result = {};
+    result["authenticationCode"] = _getAnnotation(m, FeignCall)?.peek("authenticationCode")?.stringValue ?? "";
+    return result;
+  }
+
   String _createFeignSource(ClassElement element) {
     StringBuffer result = StringBuffer();
     Map<TypeChecker, MethodElement> methods = {};
@@ -110,6 +122,7 @@ class MarianaCompiler extends GeneratorForAnnotation<MarianaApplication> {
       }
       StringBuffer _statement = StringBuffer();
       if (methods[feignCallType] != null) {
+        Map<String, String> values = _generateFeignCallValue(methods[feignCallType]!);
         _statement.write("FeignConfig.setDataCallback(${methods[feignCallType]!.displayName});");
         if (methods[feignErrorType]!.isAbstract) {
           result.write(
@@ -122,8 +135,7 @@ class MarianaCompiler extends GeneratorForAnnotation<MarianaApplication> {
                   "}"
                   "} else {"
                   "switch (value.code) {"
-                  "case \"20001\":"
-                  "case \"401\": {"
+                  "case \"e000\": {"
                   "${methods[feignLogoutType]!.displayName}();"
                   "}"
                   "}"
